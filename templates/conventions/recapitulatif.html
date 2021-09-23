@@ -314,22 +314,22 @@
                                                 {% for annexe in annexes %}
                                                     <tr>
                                                         <td>
-                                                            {{ annexe.typologie }}
+                                                            {{ annexe.get_typologie_display }}
                                                         </td>
                                                         <td>
                                                             {{ annexe.logement.designation }}
                                                         </td>
                                                         <td>
-                                                            {{ annexe.logement.typologie }}
+                                                            {{ annexe.logement.get_typologie_display }}
                                                         </td>
                                                         <td>
-                                                            {{ annexe.surface_hors_surface_retenue }}
+                                                            {{ annexe.surface_hors_surface_retenue|floatformat:2 }}
                                                         </td>
                                                         <td>
-                                                            {{ annexe.loyer_par_metre_carre }}
+                                                            {{ annexe.loyer_par_metre_carre|floatformat:2 }}
                                                         </td>
                                                         <td>
-                                                            {{ annexe.loyer }}
+                                                            {{ annexe.loyer|floatformat:2 }}
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
@@ -359,13 +359,13 @@
                                                 {% for stationnement in stationnements %}
                                                     <tr>
                                                         <td>
-                                                            {{ stationnement.typologie }}
+                                                            {{ stationnement.get_typologie_display }}
                                                         </td>
                                                         <td>
                                                             {{ stationnement.nb_stationnements }}
                                                         </td>
                                                         <td>
-                                                            {{ stationnement.loyer }}
+                                                            {{ stationnement.loyer|floatformat:2 }}
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
