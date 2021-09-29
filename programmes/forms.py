@@ -1,6 +1,10 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import BaseFormSet, formset_factory
+from django_file_form.forms import (
+    FileFormMixin,
+    MultipleUploadedFileField,
+)
 
 from programmes.models import (
     LogementEDD,
@@ -83,8 +87,7 @@ class ProgrammeForm(forms.Form):
     )
 
 
-class ProgrammeCadastralForm(forms.Form):
-
+class ProgrammeCadastralForm(FileFormMixin, forms.Form):
     permis_construire = forms.CharField(required=False)
     date_acte_notarie = forms.DateField(required=False)
     date_achevement_previsible = forms.DateField(required=False)
@@ -133,6 +136,9 @@ class ProgrammeCadastralForm(forms.Form):
         error_messages={
             "max_length": "Le message ne doit pas excéder 5000 characters",
         },
+    )
+    acte_notarial_files = MultipleUploadedFileField(
+        required=False, accept="image/*,.pdf"
     )
 
 

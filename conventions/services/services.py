@@ -1,4 +1,7 @@
 import datetime
+import json
+
+from django_file_form.models import PlaceholderUploadedFile
 
 from programmes.models import (
     Lot,
@@ -224,6 +227,48 @@ def programme_update(request, convention_uuid):
     return {"success": utils.ReturnStatus.ERROR, "convention": convention, "form": form}
 
 
+def get_field_with_files(
+    form,
+    convention,
+    from_field,
+    files_field_name="files",
+):
+    files_input = form.cleaned_data[files_field_name]
+    field = {"files": {}}
+    if files_input is not None:
+        for file in files_input:
+            if isinstance(file, PlaceholderUploadedFile):
+                field["files"][file.file_id] = from_field["files"][file.file_id]
+            else:
+                field["files"][file.file_id] = {
+                    "path": upload_objects.save_uploaded_file(
+                        file.file,
+                        convention,
+                        file.file_id,
+                        object_type="attached_files",
+                    ),
+                    "name": file.name,
+                    "size": file.size,
+                    "content_type": file.content_type,
+                }
+    return field
+
+
+def init_files_field(field):
+    initial_files = []
+    if "files" in field:
+        if isinstance(field["files"], dict):
+            for file_id in field["files"].keys():
+                initial_files.append(
+                    PlaceholderUploadedFile(
+                        name=field["files"][file_id].get("name", "NA"),
+                        file_id=file_id,
+                        size=field["files"][file_id].get("size", "NA"),
+                    )
+                )
+    return initial_files
+
+
 def programme_cadastral_update(request, convention_uuid):
     # pylint: disable=R0915
     convention = (
@@ -258,6 +303,7 @@ def programme_cadastral_update(request, convention_uuid):
             form_is_valid = form.is_valid()
             formset_is_valid = formset.is_valid()
             if form_is_valid and formset_is_valid:
+
                 programme.permis_construire = form.cleaned_data["permis_construire"]
                 programme.date_acte_notarie = form.cleaned_data["date_acte_notarie"]
                 programme.date_achevement_previsible = form.cleaned_data[
@@ -272,7 +318,14 @@ def programme_cadastral_update(request, convention_uuid):
                     "reference_publication_acte"
                 ]
                 programme.acte_de_propriete = form.cleaned_data["acte_de_propriete"]
-                programme.acte_notarial = form.cleaned_data["acte_notarial"]
+                programme.acte_notarial = json.dumps(
+                    get_field_with_files(
+                        form,
+                        convention,
+                        json.loads(programme.acte_notarial),
+                        files_field_name="acte_notarial_files",
+                    )
+                )
                 programme.save()
 
                 programme.referencecadastrale_set.all().delete()
@@ -309,7 +362,9 @@ def programme_cadastral_update(request, convention_uuid):
             )
         formset = ReferenceCadastraleFormSet(initial=initial)
         upform = UploadForm()
+
         form = ProgrammeCadastralForm(
+            # s3_upload_dir="tmp",
             initial={
                 "permis_construire": programme.permis_construire,
                 "date_acte_notarie": utils.format_date_for_form(
@@ -328,6 +383,9 @@ def programme_cadastral_update(request, convention_uuid):
                 "reference_publication_acte": programme.reference_publication_acte,
                 "acte_de_propriete": programme.acte_de_propriete,
                 "acte_notarial": programme.acte_notarial,
+                "acte_notarial_files": init_files_field(
+                    json.loads(programme.acte_notarial)
+                ),
             }
         )
     return {

@@ -7,12 +7,14 @@ from core.storage import client
 from . import utils
 
 
-def save_uploaded_file(my_file, convention, file_name):
+def save_uploaded_file(my_file, convention, file_name, object_type="upload"):
     my_file.seek(0)
+    target = f"conventions/{convention.uuid}/{object_type}/{file_name}"
     client.put_object(
         my_file=my_file.read(),
-        target=f"conventions/{convention.uuid}/uploads/{file_name}",
+        target=target,
     )
+    return target
 
 
 def handle_uploaded_file(upform, my_file, myClass, convention, file_name):

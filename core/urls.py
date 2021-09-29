@@ -21,6 +21,8 @@ from django.urls import include
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
+    path("", include("django_file_form.urls")),
+    # path("uploadS3/", include("django_file_form.s3_multipart.urls")),
     path("admin/", admin.site.urls),
     path("bailleurs/", include(("bailleurs.urls", "bailleurs"), namespace="bailleurs")),
     path(

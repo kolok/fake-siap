@@ -12,6 +12,7 @@ __pycache__
 #local repo to store DB data
 pgdata/
 staticfiles
+media/
 
 #IDE
 .vscode/
@@ -19,3 +20,4 @@ staticfiles
 #temporaire
 scripts/mailjet.py
 documents/HLM-template-v*
+django-file-form/

@@ -1,15 +1,30 @@
 {% extends "layout/base.html" %}
 
+{% load static %}
+{% load i18n %}
+
+{% block css_extras %}
+    <link rel="stylesheet" href="{% static "file_form/file_form.css" %}">
+{% endblock %}
+{% block javascript_extras %}
+    <script src="{% static "file_form/file_form.js" %}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="fr-container-fluid ds_banner fr-pb-1w">
         <div class="fr-container">
-            <form method="post" action="" enctype="multipart/form-data">
+            <form id="form_cadastre" method="post" action="" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="fr-grid-row fr-grid-row--gutters">
                     <div class="fr-col-md-12 fr-col-lg-10 fr-col-offset-lg-1 fr-my-5w">
                         <h2>Etape {{convention_form_step}}/{{ nb_steps }} - Informations cadastrales sur le programme</h2>
                         {% include "common/convention_edit_info.html" with convention=convention %}
                         {% include "common/mandatory_fields_info.html" %}
+
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
 
                         {% include "common/form/input_text.html" with form_input=form.permis_construire label="Numéro de permis construire" %}
 
@@ -80,7 +95,30 @@
                                         <label class="fr-label fr-mb-1w" for="{{form.acte_de_propriete.id_for_label}}">
                                             Acte de propriété
                                         </label>
-                                        {% include "common/form/input_upload_button.html" with textarea=False %}
+
+                                        <div class="dff-uploader">
+                                            <div
+                                                class="dff-container"
+                                                data-translations="{{ translations }}"
+                                            >
+                                                <input
+                                                    class="fr-input {% if form.acte_notarial_files.errors %}fr-input--error{% endif %}"
+                                                    aria-describedby="text-input-error-desc-error"
+                                                    type="file"
+                                                    multiple="multiple"
+                                                    id="{{form.acte_notarial_files.id_for_label}}"
+                                                    name="{{form.acte_notarial_files.html_name}}"
+                                                    value="">
+                                                {% for error in form.acte_notarial_files.errors %}
+                                                    <p id="text-input-error-desc-error" class="fr-error-text">
+                                                        {{ error }}
+                                                    </p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+
+
                                     </div>
                                 </div>
                                 <div class="fr-col-12 fr-col-md-12 fr-col-lg-6 fr-pl-md-1w fr-mb-2w">
@@ -162,4 +200,23 @@
             </form>
         </div>
     </div>
+
+
+    <!--
+    <form id="example-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+    </form> -->
+    <!-- <script>
+       initUploadFields(
+          document.getElementById("example-form")
+       );
+    </script> -->
+
+    <script>
+        initUploadFields(
+            document.getElementById("form_cadastre")
+        );
+    </script>
+
 {% endblock %}

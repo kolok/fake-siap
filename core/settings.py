@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_file_form",
     "dsfr",
     "bailleurs.apps.BailleursConfig",
     "conventions.apps.ConventionsConfig",
@@ -181,3 +182,25 @@ AWS_STORAGE_BUCKET_NAME = get_env_variable("AWS_STORAGE_BUCKET_NAME")
 AWS_DEFAULT_ACL = get_env_variable("AWS_DEFAULT_ACL")
 AWS_S3_REGION_NAME = get_env_variable("AWS_S3_REGION_NAME")
 AWS_S3_ENDPOINT_URL = get_env_variable("AWS_S3_ENDPOINT_URL")
+
+# http://mbraak.github.io/django-file-form/details.html
+# If you are using django-csp for setting the Content Security Policy,
+# then the following CORS settings are also needed in settings
+
+# CSP_DEFAULT_SRC = ("'none'",)
+# CSP_STYLE_SRC = ("'self'")
+# CSP_SCRIPT_SRC = ("'self'",)
+# CSP_FONT_SRC = ("'self'")
+# CSP_IMG_SRC = ("'self'",)
+# CSP_CONNECT_SRC = ("'self'", AWS_S3_ENDPOINT_URL)
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+FILE_FORM_UPLOAD_DIR = "tmp_doc"
+
+temp_upload_dir = os.path.join(MEDIA_ROOT, FILE_FORM_UPLOAD_DIR)
+
+if not os.path.exists(MEDIA_ROOT):
+    os.mkdir(MEDIA_ROOT)
+if not os.path.exists(temp_upload_dir):
+    os.mkdir(temp_upload_dir)
