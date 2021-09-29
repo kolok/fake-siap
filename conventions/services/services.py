@@ -233,6 +233,11 @@ def get_field_with_files(
     from_field,
     files_field_name="files",
 ):
+    try:
+        from_field = json.loads(from_field)
+    except TypeError:
+        from_field = {}
+
     files_input = form.cleaned_data[files_field_name]
     field = {"files": {}}
     if files_input is not None:
@@ -256,6 +261,12 @@ def get_field_with_files(
 
 def init_files_field(field):
     initial_files = []
+
+    try:
+        field = json.loads(field)
+    except TypeError:
+        return initial_files
+
     if "files" in field:
         if isinstance(field["files"], dict):
             for file_id in field["files"].keys():
@@ -322,7 +333,7 @@ def programme_cadastral_update(request, convention_uuid):
                     get_field_with_files(
                         form,
                         convention,
-                        json.loads(programme.acte_notarial),
+                        programme.acte_notarial,
                         files_field_name="acte_notarial_files",
                     )
                 )
@@ -383,9 +394,7 @@ def programme_cadastral_update(request, convention_uuid):
                 "reference_publication_acte": programme.reference_publication_acte,
                 "acte_de_propriete": programme.acte_de_propriete,
                 "acte_notarial": programme.acte_notarial,
-                "acte_notarial_files": init_files_field(
-                    json.loads(programme.acte_notarial)
-                ),
+                "acte_notarial_files": init_files_field(programme.acte_notarial),
             }
         )
     return {

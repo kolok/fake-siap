@@ -95,11 +95,10 @@
                                         <label class="fr-label fr-mb-1w" for="{{form.acte_de_propriete.id_for_label}}">
                                             Acte de propriété
                                         </label>
-
                                         <div class="dff-uploader">
                                             <div
                                                 class="dff-container"
-                                                data-translations="{{ translations }}"
+                                                data-translations='{"Cancel": "Annuler", "Delete": "Supprimer", "Delete failed": "La suppression a échoué", "Upload failed": "Le téléversement a échoué", "Drop your files here": "Déposer vos fichiers ici"}'
                                             >
                                                 <input
                                                     class="fr-input {% if form.acte_notarial_files.errors %}fr-input--error{% endif %}"
