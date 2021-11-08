@@ -68,10 +68,12 @@ INSTALLED_APPS = [
     "stats.apps.StatsConfig",
     "users.apps.UsersConfig",
     "upload.apps.UploadConfig",
+    # "kpis.apps.KpisConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -195,7 +197,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "Strict"
-SESSION_COOKIE_SAMESITE = "Strict"
+SESSION_COOKIE_SAMESITE = "Lax"
 
 # https://django-csp.readthedocs.io/en/latest/configuration.html
 CSP_DEFAULT_SRC = "'none'"
@@ -211,21 +213,4 @@ CSP_INCLUDE_NONCE_IN = [
     "script-src",
 ]
 
-# CSP_PREFETCH_SRC = None
-# CSP_MEDIA_SRC = None
-# CSP_FRAME_SRC = None
-# CSP_STYLE_SRC_ATTR = None
-# CSP_STYLE_SRC_ELEM = None
-# CSP_BASE_URI = None
-# CSP_CHILD_SRC = None
-# CSP_FRAME_ANCESTORS = None
-# CSP_NAVIGATE_TO = None
-# CSP_FORM_ACTION = None
-# CSP_SANDBOX = None
-# CSP_REPORT_URI = None
-# CSP_REPORT_TO = None
-# CSP_WORKER_SRC = None
-# CSP_PLUGIN_TYPES = None
-# CSP_REQUIRE_SRI_FOR = None
-# CSP_UPGRADE_INSECURE_REQUESTS = False
-# CSP_BLOCK_ALL_MIXED_CONTENT = False
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
