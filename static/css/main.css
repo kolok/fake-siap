@@ -93,6 +93,12 @@ textarea.fr-input:disabled, textarea.fr-input[disabled] {
 .col__width--120 {
   min-width:120px;
 }
+.col__width--130 {
+  min-width:130px;
+}
+.col__width--140 {
+  min-width:140px;
+}
 .col__width--150 {
   min-width:150px;
 }
@@ -184,11 +190,11 @@ textarea.fr-input:disabled, textarea.fr-input[disabled] {
   background: var(--white);
   border-radius: 4px;
   display: inline-block;
+  margin: 0.25rem;
 }
 
-.content__icons--small svg {
-  width: 24px !important;
-  height: 24px !important;
+.content__icons--small {
+  margin: 0rem 0.25rem !important;
 }
 
 .content__icons--blue svg {
@@ -204,6 +210,11 @@ textarea.fr-input:disabled, textarea.fr-input[disabled] {
 .content__icons--grey svg {
   stroke: #9C9C9C;
   color: #9C9C9C;
+}
+
+.content__icons--darkgrey svg {
+  stroke: #161616;
+  color: #161616;
 }
 
 .fr-btn--green {
@@ -242,3 +253,40 @@ textarea.fr-input:disabled, textarea.fr-input[disabled] {
 .status_clos {
   color: #9C9C9C;
 }
+
+.convention_ongoing_status {
+  background-color: #000091; /* blue-france-sun-113 */
+  color: white;
+}
+
+.convention_valid_status {
+  background-color: #18753c; /* success-425 */
+  color: white;
+}
+
+.convention_ended_status {
+  background-color: #666666; /* grey-425 */
+  color: white;
+}
+
+.background-contrast-grey950 {
+  background-color: #EEEEEE;
+}
+
+.background-contrast-grey950:hover {
+  background-color: #DDDDDD;
+}
+
+table.fullwidth {
+  width: 100%;
+}
+
+.table--layout-fixed table {
+  display: table;
+  /* table-layout: fixed; */
+}
+
+.clickable{
+  cursor: pointer;
+}
+

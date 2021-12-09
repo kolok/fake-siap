@@ -1,10 +1,12 @@
 import datetime
 
-from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.core.files.storage import default_storage
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django.views.decorators.http import require_GET, require_POST
 
 from programmes.models import (
     Annexe,
@@ -51,7 +53,7 @@ def convention_financement(request, convention_uuid):
             if upform.is_valid():
 
                 result = upload_objects.handle_uploaded_xlsx(
-                    upform, request.FILES["file"], Pret, convention, "prets.xlsx"
+                    upform, request.FILES["file"], Pret, convention, "financement.xlsx"
                 )
                 if result["success"] != utils.ReturnStatus.ERROR:
                     formset = PretFormSet(initial=result["objects"])
@@ -287,6 +289,14 @@ def convention_submit(request, convention_uuid):
     }
 
 
+@require_GET
+@login_required
+def convention_delete(request, convention_uuid):
+    convention = Convention.objects.get(uuid=convention_uuid)
+    request.user.check_perm("convention.change_convention", convention)
+    convention.delete()
+
+
 def _send_email_instruction(request, convention):
     # envoi au bailleur
     convention_url = request.build_absolute_uri(
@@ -294,7 +304,8 @@ def _send_email_instruction(request, convention):
     )
     from_email = "contact@apilos.beta.gouv.fr"
 
-    to = [request.user.email]
+    # All bailleur users from convention
+    to = convention.get_email_bailleur_users()
     text_content = render_to_string(
         "emails/bailleur_instruction.txt",
         {
@@ -350,11 +361,17 @@ def convention_feedback(request, convention_uuid):
         ConventionHistory.objects.create(
             bailleur=convention.bailleur,
             convention=convention,
-            statut_convention=convention.statut,
+            statut_convention=ConventionStatut.CORRECTION,
             statut_convention_precedent=convention.statut,
             user=request.user,
             commentaire=notification_form.cleaned_data["comment"],
         ).save()
+        if (
+            convention.statut != ConventionStatut.CORRECTION
+            and request.user.is_instructeur()
+        ):
+            convention.statut = ConventionStatut.CORRECTION
+            convention.save()
 
         return utils.base_response_redirect_recap_success(convention)
     return {
@@ -368,12 +385,8 @@ def _send_email_correction(request, convention, notification_form):
         reverse("conventions:recapitulatif", args=[convention.uuid])
     )
     if notification_form.cleaned_data["from_instructeur"]:
-        last_notification_from_bailleur = convention.get_last_bailleur_notification()
-        if last_notification_from_bailleur:
-            to = [last_notification_from_bailleur.user.email]
-        else:
-            # All bailleur users from convention
-            to = convention.get_email_bailleur_users()
+        # All bailleur users from convention
+        to = convention.get_email_bailleur_users()
         subject = f"Convention à modifier ({convention})"
         template_label = "bailleur_correction_needed"
     else:
@@ -435,6 +448,11 @@ def convention_validate(request, convention_uuid):
         )
         convention.save()
 
+    if convention_number_form.is_valid() or request.POST.get("Force"):
+
+        file_stream = convention_generator.generate_hlm(convention)
+        local_pdf_path = convention_generator.generate_pdf(file_stream, convention)
+
         ConventionHistory.objects.create(
             bailleur=convention.bailleur,
             convention=convention,
@@ -446,7 +464,7 @@ def convention_validate(request, convention_uuid):
             convention.valide_le = timezone.now()
         convention.statut = ConventionStatut.VALIDE
         convention.save()
-        _send_email_valide(request, convention)
+        _send_email_valide(request, convention, local_pdf_path)
         return {
             "success": utils.ReturnStatus.SUCCESS,
             "convention": convention,
@@ -477,19 +495,18 @@ def convention_validate(request, convention_uuid):
     }
 
 
-def _send_email_valide(request, convention):
+def _send_email_valide(request, convention, local_pdf_path=None):
+
+    extention = local_pdf_path.split(".")[-1]
+
     convention_url = request.build_absolute_uri(
         reverse("conventions:recapitulatif", args=[convention.uuid])
     )
     from_email = "contact@apilos.beta.gouv.fr"
 
     cc = [request.user.email]
-    last_notification_from_bailleur = convention.get_last_bailleur_notification()
-    if last_notification_from_bailleur:
-        to = [last_notification_from_bailleur.user.email]
-    else:
-        # All bailleur users from convention
-        to = convention.get_email_bailleur_users()
+    # All bailleur users from convention
+    to = convention.get_email_bailleur_users()
 
     text_content = render_to_string(
         "emails/bailleur_valide.txt",
@@ -510,6 +527,20 @@ def _send_email_valide(request, convention):
         f"Convention validé ({convention})", text_content, from_email, to, cc=cc
     )
     msg.attach_alternative(html_content, "text/html")
+
+    if local_pdf_path is not None:
+        pdf_file_handler = default_storage.open(local_pdf_path, "rb")
+        if extention == "pdf":
+            msg.attach(f"{convention}.pdf", pdf_file_handler.read(), "application/pdf")
+        if extention == "docx":
+            msg.attach(
+                f"{convention}.docx",
+                pdf_file_handler.read(),
+                "application/vnd.openxmlformats-officedocument.wordprocessingm",
+            )
+        pdf_file_handler.close()
+        msg.content_subtype = "html"
+
     msg.send()
 
 

@@ -13,6 +13,7 @@ class Preteur(models.TextChoices):
     REGION = "REGION", "Région"
     CDCF = "CDCF", "CDC pour le foncier"
     CDCL = "CDCL", "CDC pour le logement"
+    COMMUNE = "COMMUNE", "Commune et action logement"
     AUTRE = "AUTRE", "Autre"
 
 
@@ -95,7 +96,7 @@ class Convention(models.Model):
 
     def get_comments_dict(self):
         result = {}
-        for comment in self.comment_set.all():
+        for comment in self.comment_set.all().order_by("cree_le"):
             comment_name = (
                 comment.nom_objet
                 + "__"
@@ -114,7 +115,10 @@ class Convention(models.Model):
                 self.conventionhistory_set.prefetch_related("user")
                 .prefetch_related("user__role_set")
                 .filter(
-                    statut_convention=ConventionStatut.INSTRUCTION,
+                    statut_convention__in=[
+                        ConventionStatut.INSTRUCTION,
+                        ConventionStatut.CORRECTION,
+                    ],
                     user__role__typologie=role,
                 )
                 .latest("cree_le")
@@ -131,7 +135,10 @@ class Convention(models.Model):
     def get_last_submission(self):
         try:
             return self.conventionhistory_set.filter(
-                statut_convention=ConventionStatut.INSTRUCTION
+                statut_convention__in=[
+                    ConventionStatut.INSTRUCTION,
+                    ConventionStatut.CORRECTION,
+                ],
             ).latest("cree_le")
         except ConventionHistory.DoesNotExist:
             return None
@@ -149,11 +156,15 @@ class Convention(models.Model):
         )
 
     def prefixe_numero(self):
-        if self.statut in [
-            ConventionStatut.BROUILLON,
-            ConventionStatut.INSTRUCTION,
-            ConventionStatut.CORRECTION,
-        ]:
+        if (
+            self.statut
+            in [
+                ConventionStatut.BROUILLON,
+                ConventionStatut.INSTRUCTION,
+                ConventionStatut.CORRECTION,
+            ]
+            or self.numero is None
+        ):
             decret = "80.416"  # en application du décret n° 80.416
             # decret 80.416 pour les HLM
             # operation = "2"  # pour une opération de construction neuve (2)
@@ -172,13 +183,31 @@ class Convention(models.Model):
         return "/".join(self.numero.split("/")[:-1])
 
     def suffixe_numero(self):
-        if self.statut not in [
+        if (
+            self.statut
+            not in [
+                ConventionStatut.BROUILLON,
+                ConventionStatut.INSTRUCTION,
+                ConventionStatut.CORRECTION,
+            ]
+            and self.numero is not None
+        ):
+            return self.numero.rsplit("/", maxsplit=1)[-1]
+        return None
+
+    def get_status_class(self):
+        if self.statut in [
             ConventionStatut.BROUILLON,
             ConventionStatut.INSTRUCTION,
             ConventionStatut.CORRECTION,
         ]:
-            return self.numero.rsplit("/", maxsplit=1)[-1]
-        return None
+            return "convention_ongoing_status"
+        if self.statut == ConventionStatut.VALIDE:
+            return "convention_valid_status"
+        return "convention_ended_status"
+
+    def is_instruction_ongoing(self):
+        return self.statut in ["INSTRUCTION", "CORRECTION"]
 
 
 class ConventionHistory(models.Model):
@@ -232,7 +261,7 @@ class Pret(models.Model):
         "Prêteur\n(choisir dans la liste déroulante)": preteur,
         "Préciser l'identité du préteur si vous avez sélectionné 'Autre'": autre,
     }
-    sheet_name = "Prêts"
+    sheet_name = "Financements"
 
     def _get_preteur(self):
         return self.get_preteur_display()
