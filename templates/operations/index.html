@@ -1,0 +1,58 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block page_title %}Conventions - APiLos{% endblock%}
+
+{% block content %}
+    <div class="fr-container-fluid ds_banner">
+        <div class="fr-container">
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-my-5w">
+                    <button class="fr-btn" id="new_operation">
+                        <span class="fr-fi-edit-line fr-mr-1w" aria-hidden="true"></span>Créer une nouvelle operation
+                    </button>
+                    {% include "common/utils/onclick_redirect.html" with id='new_operation' url_target='operations:index' %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="fr-grid-row fr-col-xs-10 fr-col-7 fr-my-7w">
+    <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-md-12 ">
+                {% if operations %}
+                    <div class="fr-table fr-table--bordered">
+                        <table>
+                            <caption>Gérez vos opérations</caption>
+
+                            <thead>
+                                <tr>
+                                    <th scope="col">Bailleur</th>
+                                    <th scope="col">Administration</th>
+                                    <th scope="col">Nom de l'opération</th>
+                                    <th scope="col" class="col__width--140">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for operation in operations %}
+                                    <tr>
+                                        <td>{{operation.bailleur}}</td>
+                                        <td>{{operation.administration}}</td>
+                                        <td>{{operation.nom}}</td>
+                                        <td>
+                                            ACTIONS
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p>Vous n'avez pas encore d'opérations...</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,26 +1,25 @@
 version: "3"
 services:
-  postgres:
+  siap-db:
     image: postgres:12-alpine
     environment:
-      - POSTGRES_USER=apilos
-      - POSTGRES_PASSWORD=apilos
-      - POSTGRES_MULTIPLE_DATABASES=apilos-test
+      - POSTGRES_USER=siap
+      - POSTGRES_PASSWORD=siap
+      - POSTGRES_MULTIPLE_DATABASES=siap-test
     volumes:
       - ./pg-init-scripts:/docker-entrypoint-initdb.d
       - ./pgdata:/var/lib/postgresql/data
     ports:
-      - 5433:5432
-  apilos:
+      - 6543:5432
+  siap:
     build: .
-#    command: tail -f README.md
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
-      - "8001:8000"
+      - "9000:8000"
     depends_on:
-      - postgres
+      - siap-db
 
 volumes:
   data:
