@@ -5,58 +5,78 @@
 {% block page_title %}Conventions - APiLos{% endblock%}
 
 {% block content %}
-    <div class="fr-container-fluid ds_banner">
+
+    <div class="fr-container-fluid">
         <div class="fr-container">
-            <div class="fr-grid-row fr-grid-row--gutters">
-                <div class="fr-my-5w">
-                    <button class="fr-btn" id="new_operation">
-                        <span class="fr-fi-edit-line fr-mr-1w" aria-hidden="true"></span>Créer une nouvelle operation
-                    </button>
-                    {% include "common/utils/onclick_redirect.html" with id='new_operation' url_target='operations:index' %}
+
+            <div class="fr-tabs fr-my-3w">
+                <ul class="fr-tabs__list" role="tablist" aria-label="main_tab">
+                    <li role="presentation">
+                        <button id="tabpanel-404" class="fr-tabs__tab fr-fi-checkbox-line fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-404-panel">Opérations</button>
+                    </li>
+                    <li role="presentation">
+                        <button id="tabpanel-405" class="fr-tabs__tab fr-fi-checkbox-line fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-405-panel">Conventions</button>
+                    </li>
+                </ul>
+                <div id="tabpanel-404-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-404" tabindex="0">
+
+                    <div class="fr-grid-row fr-grid-row--gutters">
+                        <div class="fr-my-5w">
+                            <button class="fr-btn" id="new_operation">
+                                <span class="fr-fi-edit-line fr-mr-1w" aria-hidden="true"></span>Créer une nouvelle operation
+                            </button>
+                            {% include "common/utils/onclick_redirect.html" with id='new_operation' url_target='operations:index' %}
+                        </div>
+                    </div>
+        
+
+                    <hr class="fr-grid-row fr-col-xs-10 fr-col-7 fr-my-7w">
+                    <div class="fr-container">
+                        <div class="fr-grid-row fr-grid-row--gutters">
+                            <div class="fr-col-md-12 ">
+                                {% if operations %}
+                                    <div class="fr-table fr-table--bordered">
+                                        <table>
+                                            <caption>Gérez vos opérations</caption>
+                
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Bailleur</th>
+                                                    <th scope="col">Administration</th>
+                                                    <th scope="col">Nom de l'opération</th>
+                                                    <th scope="col" class="col__width--140">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for operation in operations %}
+                                                    <tr>
+                                                        <td>{{operation.bailleur}}</td>
+                                                        <td>{{operation.administration}}</td>
+                                                        <td>{{operation.nom}}</td>
+                                                        <td>
+                                                            ACTIONS
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <p>Vous n'avez pas encore d'opérations...</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div id="tabpanel-405-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-405" tabindex="0">
+                    <p>
+                        Exemple de lien vers <a href="http://local.beta.gouv.fr:8001/conventions/recapitulatif/0c72ac26-9e90-4865-9bd8-d7e1a35a7130" target="_blank">une convention</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <hr class="fr-grid-row fr-col-xs-10 fr-col-7 fr-my-7w">
-    <div class="fr-container">
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-md-12 ">
-                {% if operations %}
-                    <div class="fr-table fr-table--bordered">
-                        <table>
-                            <caption>Gérez vos opérations</caption>
-
-                            <thead>
-                                <tr>
-                                    <th scope="col">Bailleur</th>
-                                    <th scope="col">Administration</th>
-                                    <th scope="col">Nom de l'opération</th>
-                                    <th scope="col" class="col__width--140">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for operation in operations %}
-                                    <tr>
-                                        <td>{{operation.bailleur}}</td>
-                                        <td>{{operation.administration}}</td>
-                                        <td>{{operation.nom}}</td>
-                                        <td>
-                                            ACTIONS
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p>Vous n'avez pas encore d'opérations...</p>
-                {% endif %}
-
-                <p>
-                    Exemple de lien vers <a href="http://local.beta.gouv.fr:8001/conventions/recapitulatif/0c72ac26-9e90-4865-9bd8-d7e1a35a7130">une convention</a>
-                </p>
-            </div>
-        </div>
-    </div>
 {% endblock %}
