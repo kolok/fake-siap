@@ -1,7 +1,7 @@
 import uuid
 
 from django.db import models
-
+from django.urls import reverse
 
 class Financement(models.TextChoices):
     PLUS = "PLUS", "PLUS"
@@ -100,3 +100,7 @@ class Operation(models.Model):
     def __str__(self):
         return self.nom
 
+    # Methods
+    def get_absolute_url(self):
+        """Returns the url to access a particular instance of MyModelName."""
+        return reverse('operations:index')

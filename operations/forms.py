@@ -1,14 +1,26 @@
 from django import forms
-from django.core.exceptions import ValidationError
-from django.forms import BaseFormSet, formset_factory
+from django.forms import ModelForm
 from core import forms_utils
 
 from operations.models import (
     Operation,
+    TypeHabitat,
+    TypeOperation,
 )
 
+class OperationForm(ModelForm):
+  class Meta:
+    model = Operation
+    fields = ['nom', 'bailleur', 'administration', 'code_postal', 'ville',
+    'adresse', 'numero_galion', 'annee_gestion_programmation', 'zone_123',
+    'zone_abc', 'surface_utile_totale', 'type_habitat', 'type_operation',
+    'date_achevement_previsible']
+    labels = {
+        'nom': 'Nom',
+        'bailleur': 'Entreprise bailleur (MOA)',
+    }
 
-class OperationForm(forms.Form):
+class Operation2Form(forms.Form):
     object_name = "programme"
 
     uuid = forms.UUIDField(required=False)
@@ -28,7 +40,7 @@ class OperationForm(forms.Form):
         },
     )
     type_habitat = forms.TypedChoiceField(required=False, choices=TypeHabitat.choices)
-    type_operation = forms.CharField(required=False)
+    type_operation = forms.TypedChoiceField(required=False, choices=TypeOperation.choices)
     anru = forms.BooleanField(required=False)
     nb_locaux_commerciaux = forms.IntegerField(required=False)
     nb_bureaux = forms.IntegerField(required=False)

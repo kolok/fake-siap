@@ -2,8 +2,6 @@
 
 {% load static %}
 
-{% block page_title %}Conventions - APiLos{% endblock%}
-
 {% block content %}
 
     <div class="fr-container-fluid">
@@ -25,7 +23,7 @@
                             <button class="fr-btn" id="new_operation">
                                 <span class="fr-fi-edit-line fr-mr-1w" aria-hidden="true"></span>Créer une nouvelle operation
                             </button>
-                            {% include "common/utils/onclick_redirect.html" with id='new_operation' url_target='operations:index' %}
+                            {% include "common/utils/onclick_redirect.html" with id='new_operation' url_target='operations:create' %}
                         </div>
                     </div>
         
@@ -54,7 +52,12 @@
                                                         <td>{{operation.administration}}</td>
                                                         <td>{{operation.nom}}</td>
                                                         <td>
-                                                            ACTIONS
+                                                            <a class="fr-link fr-mb-1w" href="{% url 'operations:update' pk=operation.id %}" >
+                                                                <span class="fr-fi-edit-line" aria-hidden="true"></span>
+                                                            </a>
+                                                            <a class="fr-link fr-mb-1w" href="{% url 'operations:delete' pk=operation.id %}" >
+                                                                <span class="fr-fi-delete-line" aria-hidden="true"></span>
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 {% endfor %}

@@ -1,7 +1,7 @@
 <div class="fr-select-group {% if form_input.errors %}fr-select-group--error{% endif %}">
-    {% if label %}
+    {% if form_input.label %}
         <label class="fr-label" for="{{form_input.id_for_label}}">
-            {{ label }}
+            {{ form_input.label }}
         </label>
     {% endif %}
 
@@ -14,16 +14,15 @@
             {% if not without_empty_option %}
                 <option value="" {% if not form_input.value %}selected{% endif %} disabled hidden></option>
             {% endif %}
-            {% for element in enum %}
-                <option value="{{element.value}}"
-                    {% if element.value  == form_input.value %}selected{% endif %}>
-                    {{element.label}}
+            {% for f_value, f_text in form_input.field.choices %}
+                <option value="{{f_value}}"
+                    {% if f_value  == form_input.value %}selected{% endif %}>
+                    {{ f_text }}
                 </option>
             {% endfor %}
         </select>
         {% include "common/comment_icon.html" with form_input_id=form_input.id_for_label object_field=object_field comments=comments %}
     </div>
-
     {% for error in form_input.errors %}
         <p id="select-error-desc-error" class="fr-error-text">
             {{ error }}
