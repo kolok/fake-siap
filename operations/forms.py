@@ -14,10 +14,14 @@ class OperationForm(ModelForm):
     fields = ['nom', 'bailleur', 'administration', 'code_postal', 'ville',
     'adresse', 'numero_galion', 'annee_gestion_programmation', 'zone_123',
     'zone_abc', 'surface_utile_totale', 'type_habitat', 'type_operation',
-    'date_achevement_previsible']
+    'date_achevement_previsible', 'plai', 'plus', 'pls', 'autre',]
     labels = {
         'nom': 'Nom',
         'bailleur': 'Entreprise bailleur (MOA)',
+        'plai': 'PLAI',
+        'plus': 'PLUS',
+        'pls': 'PLS',
+        'autre': 'Autre',
     }
 
 class Operation2Form(forms.Form):

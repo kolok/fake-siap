@@ -1,0 +1,75 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+    <div class="fr-container-fluid">
+        <div class="fr-container">
+
+
+            <ul class="fr-btns-group fr-btns-group--inline fr-mt-5w">
+                <li>
+                    <button type="button" class="fr-btn fr-btn--secondary" id="operations">
+                        Opérations
+                    </button>
+                    {% include "common/utils/onclick_redirect.html" with id='operations' url_target='operations:operation_list' %}
+                </li>
+                <li>
+                    <button type="button" class="fr-btn"  id="conventions">
+                        Conventions
+                    </button>
+                    {% include "common/utils/onclick_redirect.html" with id='conventions' url_target='operations:convention_list' %}
+                </li>
+            </ul>
+
+            <div class="fr-container">
+                <div class="fr-grid-row fr-grid-row--gutters">
+                    <div class="fr-col-md-12 ">
+                        {% if conventions %}
+                        
+                            <div class="fr-table fr-table--bordered">
+                                <table>
+                                    <caption>{{conventions.count}} Conventions</caption>
+        
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Bailleur</th>
+                                            <th scope="col">Programme</th>
+                                            <th scope="col">Financement</th>
+                                            <th scope="col">Ville</th>
+                                            <th scope="col">Nombre de logements à conventionner</th>
+                                            <th scope="col">Statut</th>
+                                            <th scope="col" class="col__width--140">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for convention in conventions.results %}
+                                            <tr>
+                                                <td>{{convention.bailleur.nom}}</td>
+                                                <td>{{convention.programme.nom}}</td>
+                                                <td>{{convention.financement}}</td>
+                                                <td>{{convention.programme.ville}}</td>
+                                                <td>{{convention.lot.nb_logements}}</td>
+                                                <td>{{convention.statut}}</td>
+                                                <td>
+                                                    <a class="fr-link fr-mb-1w" href="https://staging.apilos.beta.gouv.fr/conventions/recapitulatif/{{ convention.uuid }}" target="_blank">
+                                                        <span class="fr-fi-eye-line" aria-hidden="true"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p>Vous n'avez pas encore de conventions...</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

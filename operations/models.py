@@ -97,10 +97,15 @@ class Operation(models.Model):
     cree_le = models.DateTimeField(auto_now_add=True)
     mis_a_jour_le = models.DateTimeField(auto_now=True)
 
+    plai = models.BooleanField(default=False)
+    plus = models.BooleanField(default=False)
+    pls = models.BooleanField(default=False)
+    autre = models.BooleanField(default=False)
+
     def __str__(self):
         return self.nom
 
     # Methods
     def get_absolute_url(self):
         """Returns the url to access a particular instance of MyModelName."""
-        return reverse('operations:index')
+        return reverse('operations:operation_list')
