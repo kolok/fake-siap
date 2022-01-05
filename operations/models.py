@@ -31,6 +31,7 @@ class TypeHabitat(models.TextChoices):
 class Bailleur(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
+    apilos_uuid = models.UUIDField(primary_key=False, null=True)
     nom = models.CharField(max_length=255)
     siret = models.CharField(max_length=14)
     capital_social = models.FloatField(null=True)
@@ -51,6 +52,7 @@ class Bailleur(models.Model):
 class Administration(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
+    apilos_uuid = models.UUIDField(primary_key=False, null=True)
     nom = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
     ville_signature = models.CharField(max_length=255, null=True)
@@ -62,6 +64,7 @@ class Administration(models.Model):
 class Operation(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    apilos_uuid = models.UUIDField(primary_key=False, null=True)
     nom = models.CharField(max_length=255)
     bailleur = models.ForeignKey(
         "Bailleur", on_delete=models.CASCADE, null=False
