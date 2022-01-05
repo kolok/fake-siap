@@ -79,16 +79,16 @@
             <div class="fr-mb-2w">
               <div class="fr-grid-row fr-grid-row--gutters">
                 <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-mb-2w">
-                  {% include "common/form/input_checkbox.html" with form_input=form.plai %}
-                </div>
-                <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-mb-2w">
-                  {% include "common/form/input_checkbox.html" with form_input=form.plus %}
+                  {% include "common/form/input_number.html" with form_input=form.nb_plai %}
                 </div>
                 <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-pl-md-1w fr-mb-2w">
-                  {% include "common/form/input_checkbox.html" with form_input=form.pls %}
+                  {% include "common/form/input_number.html" with form_input=form.nb_plus %}
                 </div>
                 <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-pl-md-1w fr-mb-2w">
-                  {% include "common/form/input_checkbox.html" with form_input=form.autre %}
+                  {% include "common/form/input_number.html" with form_input=form.nb_pls %}
+                </div>
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-pl-md-1w fr-mb-2w">
+                  {% include "common/form/input_number.html" with form_input=form.nb_autre %}
                 </div>
               </div>
             </div>

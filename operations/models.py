@@ -100,10 +100,10 @@ class Operation(models.Model):
     cree_le = models.DateTimeField(auto_now_add=True)
     mis_a_jour_le = models.DateTimeField(auto_now=True)
 
-    plai = models.BooleanField(default=False)
-    plus = models.BooleanField(default=False)
-    pls = models.BooleanField(default=False)
-    autre = models.BooleanField(default=False)
+    nb_plai = models.IntegerField(null=True)
+    nb_plus = models.IntegerField(null=True)
+    nb_pls = models.IntegerField(null=True)
+    nb_autre = models.IntegerField(null=True)
 
     def __str__(self):
         return self.nom

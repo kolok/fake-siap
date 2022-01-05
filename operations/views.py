@@ -57,23 +57,23 @@ class OperationCreate(CreateView):
     self.object.apilos_uuid = programme['uuid']
     self.object.save()
 
-    if form.cleaned_data["plai"]:
+    if form.cleaned_data["nb_plai"]:
       client_api.create_lot({
         'programme_uuid': programme['uuid'],
         'financement': 'PLAI',
-        'nb_logements': 10
+        'nb_logements': form.cleaned_data["nb_plai"]
       })
-    if form.cleaned_data["plus"]:
+    if form.cleaned_data["nb_plus"]:
       client_api.create_lot({
         'programme_uuid': programme['uuid'],
         'financement': 'PLUS',
-        'nb_logements': 10
+        'nb_logements': form.cleaned_data["nb_plus"]
       })
-    if form.cleaned_data["pls"]:
+    if form.cleaned_data["nb_pls"]:
       client_api.create_lot({
         'programme_uuid': programme['uuid'],
         'financement': 'PLS',
-        'nb_logements': 10
+        'nb_logements': form.cleaned_data["nb_pls"]
       })
 
     print('CREATE PROGRAMME : Après form validate !!!')

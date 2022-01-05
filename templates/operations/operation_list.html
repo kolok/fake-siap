@@ -38,6 +38,7 @@
                                             <th scope="col">Administration</th>
                                             <th scope="col">Nom de l'opération</th>
                                             <th scope="col" class="col__width--140">Action</th>
+                                            <th scope="col" class="col__width--140">Conventions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -53,6 +54,23 @@
                                                     <a class="fr-link fr-mb-1w" href="{% url 'operations:delete' pk=operation.id %}" >
                                                         <span class="fr-fi-delete-line" aria-hidden="true"></span>
                                                     </a>
+                                                </td>
+                                                <td>
+                                                    {% if operation.nb_plai %}
+                                                        <a class="fr-link fr-mb-1w" href="https://staging.apilos.beta.gouv.fr/conventions/operation/{{ operation.apilos_uuid }}/PLAI" target="_blank">
+                                                            {{operation.nb_plai}} PLAI&nbsp;<span class="fr-fi-eye-line" aria-hidden="true"></span>
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if operation.nb_plus %}
+                                                        <a class="fr-link fr-mb-1w" href="https://staging.apilos.beta.gouv.fr/conventions/operation/{{ operation.apilos_uuid }}/PLUS" target="_blank">
+                                                            {{operation.nb_plus}} PLUS&nbsp;<span class="fr-fi-eye-line" aria-hidden="true"></span>
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if operation.nb_pls %}
+                                                        <a class="fr-link fr-mb-1w" href="https://staging.apilos.beta.gouv.fr/conventions/operation/{{ operation.apilos_uuid }}/PLS" target="_blank">
+                                                            {{operation.nb_pls}} PLS&nbsp;<span class="fr-fi-eye-line" aria-hidden="true"></span>
+                                                        </a>
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                         {% endfor %}
