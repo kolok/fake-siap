@@ -66,6 +66,15 @@
                 </div>
             </div>
 
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-my-5w">
+                    <button class="fr-btn" id="new_operation">
+                        <span class="fr-fi-edit-line fr-mr-1w" aria-hidden="true"></span>Créer une nouvelle operation
+                    </button>
+                    {% include "common/utils/onclick_redirect.html" with id='new_operation' url_target='operations:create' %}
+                </div>
+            </div>
+
         </div>
     </div>
 
