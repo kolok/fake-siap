@@ -1,0 +1,114 @@
+{% extends "layout/base.html" %}
+
+{% block content %}  
+  <div class="fr-container-fluid ds_banner">
+    <div class="fr-container">
+      <form method="post" action="">
+        {% csrf_token %}
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-md-12 fr-mt-5w">
+
+            <h4>Opération !!!</h4>
+
+            {% include "common/form/input_text.html" with form_input=form.nom %}
+            <div class="fr-mb-2w">
+              <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-6 fr-mb-2w">
+                    {% include "common/form/select_enum.html" with form_input=form.bailleur %}
+                  </div>
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-6 fr-pl-md-1w fr-mb-2w">
+                    {% include "common/form/select_enum.html" with form_input=form.administration %}
+                  </div>
+              </div>
+            </div>
+
+            <h4>Adresse</h4>
+            {% include "common/form/input_text.html" with form_input=form.adresse %}
+            <div class="fr-mb-2w">
+              <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-6 fr-mb-2w">
+                    {% include "common/form/input_text.html" with form_input=form.code_postal %}
+                  </div>
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-6 fr-pl-md-1w fr-mb-2w">
+                    {% include "common/form/input_text.html" with form_input=form.ville %}
+                  </div>
+              </div>
+            </div>
+
+            <h4>Détail de l'opération</h4>
+            <div class="fr-mb-2w">
+              <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-6 fr-mb-2w">
+                    {% include "common/form/select_enum.html" with form_input=form.type_habitat %}
+                  </div>
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-6 fr-pl-md-1w fr-mb-2w">
+                    {% include "common/form/select_enum.html" with form_input=form.type_operation %}
+                  </div>
+              </div>
+            </div>
+
+            <div class="fr-mb-2w">
+              <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-4 fr-mb-2w">
+                    {% include "common/form/input_number.html" with form_input=form.annee_gestion_programmation %}
+                  </div>
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-4 fr-pl-md-1w fr-mb-2w">
+                    {% include "common/form/input_date.html" with form_input=form.date_achevement_previsible %}
+                  </div>
+                  <div class="fr-col-12 fr-col-md-12 fr-col-lg-4 fr-pl-md-1w fr-mb-2w">
+                    {% include "common/form/input_text.html" with form_input=form.numero_galion %}
+                  </div>
+              </div>
+            </div>
+
+            <div class="fr-mb-2w">
+              <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-4 fr-mb-2w">
+                  {% include "common/form/input_number.html" with form_input=form.surface_utile_totale step="0.01" %}
+                </div>
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-4 fr-mb-2w">
+                  {% include "common/form/input_number.html" with form_input=form.zone_123 %}
+                </div>
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-4 fr-pl-md-1w fr-mb-2w">
+                  {% include "common/form/input_text.html" with form_input=form.zone_abc %}
+                </div>
+              </div>
+            </div>
+
+            <h4>Financement de l'opération</h4>
+            <div class="fr-mb-2w">
+              <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-mb-2w">
+                  {% include "common/form/input_number.html" with form_input=form.nb_plai %}
+                </div>
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-pl-md-1w fr-mb-2w">
+                  {% include "common/form/input_number.html" with form_input=form.nb_plus %}
+                </div>
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-pl-md-1w fr-mb-2w">
+                  {% include "common/form/input_number.html" with form_input=form.nb_pls %}
+                </div>
+                <div class="fr-col-12 fr-col-md-12 fr-col-lg-3 fr-pl-md-1w fr-mb-2w">
+                  {% include "common/form/input_number.html" with form_input=form.nb_autre %}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-button-footer fr-col-12 fr-col-md-12  fr-py-5w">
+          <button class="fr-btn">
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+
+
+
+
+
+

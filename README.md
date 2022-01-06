@@ -1,24 +1,10 @@
-# APiLos
+# Fake SIAP
 
-> Assistance au Pilotage du Logement social
-
-Plateforme Numérique pour la gestion unifiée des conventions APL
-
-Lorsqu'un bailleur construit un logement social en france, avant la mise en location, il signe une convention APL avec le territoire. Cette convention est nécéssaire pour déterminer le prix au m2 et d'autres modalités de mise en location.
-
-APiLos offre une solution numérique pour la gestion de ces conventions entre bailleurs et instructeur de l'état (appartenant généralement au territoire) et plus tard d'autres acteurs tel que les préfectures ou la CAF.
-
-APiLos a aussi pour vocation de centraliser et fiabiliter les statistiques des logemente sociaux sur le territoire français pour un pilotage éclairé de la construction du parc social en France.
+Cette plateforme est une simulation du Système d'Information des Aides à la Pierre (SIAP) pour prouver l'interopérabilité des 2 plateformes SIAP et APiLos
 
 ## Solution technique
 
-La plateforme est développé avec le framework Django et son moteur de template par défaut.
-
-Le design de l'interface suit le [Système de design de l'état](https://gouvfr.atlassian.net/wiki/spaces/DB/overview?homepageId=145359476)
-
-La génération de document .docx est prise en charge par la librairie [python-docx-template](https://docxtpl.readthedocs.io/en/latest/) qui utilise le moteur de template Jinja2 pour générer des documents docx
-
-Le package openpyxl est utilisé pour l'interprétation des fichier xlsx
+Fork de la solution APiLos, cela permet de gagner du temps
 
 ### Qualité de code
 

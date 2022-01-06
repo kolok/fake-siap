@@ -16,9 +16,20 @@ import os
 from decouple import config
 import dj_database_url
 
-
 def get_env_variable(name, cast=str, default=""):
     try:
+        if cast == bool:
+            return os.environ[name].lower() in [
+                "true",
+                "1",
+                "t",
+                "y",
+                "yes",
+                "yeah",
+                "yup",
+                "certainly",
+                "uh-huh",
+            ]
         return cast(os.environ[name])
     # pylint: disable=W0702, bare-except
     except:
@@ -34,23 +45,9 @@ SECRET_KEY = get_env_variable("SECRET_KEY")
 DEBUG = get_env_variable("DEBUG", cast=bool)
 ENVIRONMENT = get_env_variable("ENVIRONMENT", default="development")
 
-mailjet_api_key = get_env_variable("MAILJET_API_KEY")
-mailjet_api_secret = get_env_variable("MAILJET_API_SECRET")
-
-DEFAULT_FROM_EMAIL = "contact@apilos.beta.gouv.fr"
-
-if mailjet_api_key != "":
-    EMAIL_BACKEND = "django_mailjet.backends.MailjetBackend"
-    MAILJET_API_KEY = mailjet_api_key
-    MAILJET_API_SECRET = mailjet_api_secret
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-CONVERTAPI_SECRET = get_env_variable("CONVERTAPI_SECRET")
-
 env_allowed_hosts = []
 try:
-    env_allowed_hosts = os.environ["ALLOWED_HOSTS"].split(",")
+    env_allowed_hosts = get_env_variable("ALLOWED_HOSTS").split(",")
 except KeyError:
     pass
 
@@ -64,14 +61,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
-    "bailleurs.apps.BailleursConfig",
-    "conventions.apps.ConventionsConfig",
-    "instructeurs.apps.InstructeursConfig",
-    "programmes.apps.ProgrammesConfig",
-    "stats.apps.StatsConfig",
+    "operations.apps.OperationsConfig",
     "users.apps.UsersConfig",
-    "upload.apps.UploadConfig",
-    "comments.apps.CommentsConfig",
+    "django_cas_ng",
 ]
 
 MIDDLEWARE = [
@@ -180,40 +172,53 @@ AUTH_USER_MODEL = "users.User"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-# Object storage with Scaleway
-AWS_ACCESS_KEY_ID = get_env_variable("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = get_env_variable("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = get_env_variable("AWS_STORAGE_BUCKET_NAME")
-AWS_DEFAULT_ACL = get_env_variable("AWS_DEFAULT_ACL")
-AWS_S3_REGION_NAME = get_env_variable("AWS_S3_REGION_NAME")
-AWS_S3_ENDPOINT_URL = get_env_variable("AWS_S3_ENDPOINT_URL")
+DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
-if AWS_ACCESS_KEY_ID:
-    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-else:
-    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 6 * 60 * 60
 
 # Security settings
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+if ENVIRONMENT != "development":
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "Strict"
 SESSION_COOKIE_SAMESITE = "Lax"
 
 # https://django-csp.readthedocs.io/en/latest/configuration.html
 CSP_DEFAULT_SRC = "'none'"
-CSP_SCRIPT_SRC = ("https://stats.data.gouv.fr/piwik.js",)
-# CSP_SCRIPT_SRC_ELEM = ("https://stats.data.gouv.fr/piwik.js",)  # Matomo
+CSP_SCRIPT_SRC = ("'self'")
 CSP_IMG_SRC = ("'self'", "data:")
 CSP_OBJECT_SRC = "'none'"
 CSP_FONT_SRC = "'self'", "data:"
-CSP_CONNECT_SRC = ("'self'", "https://stats.data.gouv.fr/piwik.php")
+CSP_CONNECT_SRC = ("'self'")
 CSP_STYLE_SRC = "'self'"
 CSP_MANIFEST_SRC = "'self'"
 CSP_INCLUDE_NONCE_IN = [
     "script-src",
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+MIDDLEWARE = MIDDLEWARE + [
+    "django_cas_ng.middleware.CASMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = ["core.backends.CerbereCASBackend"]  # custom backend CAS
+
+# CAS config
+CAS_SERVER_URL = (
+    "https://authentification.din.developpement-durable.gouv.fr/cas/public"
+)
+CAS_VERSION = "CAS_2_SAML_1_0"
+CAS_USERNAME_ATTRIBUTE = "username"
+CAS_APPLY_ATTRIBUTES_TO_USER = True
+CAS_RENAME_ATTRIBUTES = {
+    "UTILISATEUR.ID": "username",
+    "UTILISATEUR.NOM": "last_name",
+    "UTILISATEUR.PRENOM": "first_name",
+    "UTILISATEUR.MEL": "email",
+}  # ,'UTILISATEUR.UNITE':'unite'
+
+LOGIN_URL = "/accounts/cerbere-login"
+
+APILOS_API_CLIENT_HOST=get_env_variable("APILOS_API_CLIENT_HOST")
+APILOS_API_CLIENT_USERNAME=get_env_variable("APILOS_API_CLIENT_USERNAME")
+APILOS_API_CLIENT_PASSWORD=get_env_variable("APILOS_API_CLIENT_PASSWORD")
