@@ -12,8 +12,21 @@ class ClientAPI():
         self.client = coreapi.Client(auth=auth)
 
     def get_conventions(self):
-        print(settings.APILOS_API_CLIENT_HOST + 'conventions/')
-        return self.client.get(settings.APILOS_API_CLIENT_HOST + 'conventions')
+
+        response =  requests.get(
+            settings.APILOS_API_CLIENT_HOST + 'conventions/',
+            auth=(
+                settings.APILOS_API_CLIENT_USERNAME,
+                settings.APILOS_API_CLIENT_PASSWORD,
+            ),
+            allow_redirects=True,
+            params={'bailleur_uuid': '8e55ca3a-f7be-4f9d-8f66-7e12bfb8e7c5'}
+        )
+        return response.json()
+
+
+        # print(settings.APILOS_API_CLIENT_HOST + 'conventions/')
+        # return self.client.get(settings.APILOS_API_CLIENT_HOST + 'conventions?bailleur_uuid=2c84b275-4a82-4524-958b-b405abb5f5f8')
 
     def create_programme(self, payload):
         print(f"CREATE PROGRAMME : {settings.APILOS_API_CLIENT_HOST + 'programmes/'}")
